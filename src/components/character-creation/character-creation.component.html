@@ -1,0 +1,72 @@
+<div class="flex flex-col items-center justify-center min-h-screen p-4">
+  <div class="max-w-3xl w-full bg-zinc-800/50 backdrop-blur-sm p-8 rounded-lg border border-amber-500/20 shadow-2xl shadow-black/50">
+    <h1 class="text-4xl md:text-5xl font-medieval text-amber-400 mb-6 text-center">Create Your Hero</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Left Side: Name & Lore -->
+      <div class="space-y-6">
+        <div>
+          <label for="charName" class="block text-lg font-medieval text-zinc-300 mb-2">Name</label>
+          <input
+            id="charName"
+            type="text"
+            [ngModel]="characterName()"
+            (ngModelChange)="characterName.set($event)"
+            placeholder="e.g., Kaelen the Shadow"
+            class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md focus:ring-2 focus:ring-amber-500 focus:outline-none transition-colors placeholder-zinc-500 text-zinc-200"
+          />
+        </div>
+        <div>
+          <label for="charLore" class="block text-lg font-medieval text-zinc-300 mb-2">Backstory</label>
+          <textarea
+            id="charLore"
+            [ngModel]="characterLore()"
+            (ngModelChange)="characterLore.set($event)"
+            rows="12"
+            placeholder="Who are you? Where do you come from? What drives you?"
+            class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md focus:ring-2 focus:ring-amber-500 focus:outline-none transition-colors placeholder-zinc-500 text-zinc-200 resize-none"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Right Side: Stats -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center bg-zinc-900/50 p-3 rounded-md">
+          <h2 class="text-2xl font-medieval text-zinc-300">Ability Scores</h2>
+          <div class="text-right">
+            <div class="text-lg font-bold text-amber-400">{{ pointsAvailable() }}</div>
+            <div class="text-sm text-zinc-400">Points Remaining</div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          @for (stat of stats(); track stat.name) {
+            <div class="grid grid-cols-3 items-center gap-2">
+              <span class="font-bold text-zinc-300 col-span-1">{{ stat.name }}</span>
+              <div class="col-span-2 flex items-center justify-end gap-2">
+                <button (click)="decreaseStat(stat.name)" [disabled]="stat.value <= 8" class="px-3 py-1 bg-zinc-700 hover:bg-zinc-600 rounded disabled:opacity-50 disabled:cursor-not-allowed">-</button>
+                <span class="w-8 text-center text-xl font-bold text-amber-400">{{ stat.value }}</span>
+                <button (click)="increaseStat(stat.name)" [disabled]="!canIncrease(stat)" class="px-3 py-1 bg-zinc-700 hover:bg-zinc-600 rounded disabled:opacity-50 disabled:cursor-not-allowed">+</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Finalize Button -->
+    <div class="mt-8 text-center">
+       <button
+        (click)="createCharacter()"
+        class="w-full md:w-auto py-3 px-12 bg-amber-600 hover:bg-amber-500 text-zinc-900 font-bold rounded-md shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out font-medieval text-xl tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="!isCreationComplete()"
+        title="Finalize your character and begin"
+      >
+        Embark on Your Quest
+      </button>
+      @if (pointsAvailable() < 0) {
+        <p class="text-red-400 mt-2">You have spent too many points!</p>
+      }
+    </div>
+  </div>
+</div>

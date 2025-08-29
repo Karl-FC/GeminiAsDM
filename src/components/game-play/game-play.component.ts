@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, output, signal, effect, ElementRef, viewChild, afterNextRender } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GeminiService } from '../../services/gemini.service';
+import { Character } from '../../models/character.model';
 
 interface Message {
   role: 'user' | 'model';
@@ -16,6 +17,7 @@ interface Message {
 })
 export class GamePlayComponent {
   initialPrompt = input.required<string>();
+  character = input.required<Character>();
   gameReset = output<void>();
 
   adventureLog = signal<Message[]>([]);
@@ -50,9 +52,27 @@ export class GamePlayComponent {
     this.isInitialized = true;
     
     this.geminiService.startChat();
-    const prompt = this.initialPrompt() || 'Begin a random adventure for me.';
-    this.adventureLog.set([{ role: 'user', text: `Adventure Idea: ${prompt}` }]);
-    await this.streamResponse(prompt);
+
+    const char = this.character();
+    const characterSheet = `
+My Character Sheet:
+Name: ${char.name}
+Backstory: ${char.lore || 'No backstory provided.'}
+Abilities:
+- Strength: ${char.stats.find(s => s.name === 'Strength')?.value}
+- Dexterity: ${char.stats.find(s => s.name === 'Dexterity')?.value}
+- Constitution: ${char.stats.find(s => s.name === 'Constitution')?.value}
+- Intelligence: ${char.stats.find(s => s.name === 'Intelligence')?.value}
+- Wisdom: ${char.stats.find(s => s.name === 'Wisdom')?.value}
+- Charisma: ${char.stats.find(s => s.name === 'Charisma')?.value}
+    `;
+
+    const adventure = this.initialPrompt() || 'Begin a random adventure for me.';
+    const fullPrompt = `Let's start the adventure.\n\n${characterSheet}\n\nAdventure Synopsis: ${adventure}`;
+    
+    // Display a friendlier message in the log
+    this.adventureLog.set([{ role: 'user', text: `Let the adventure begin: ${adventure}` }]);
+    await this.streamResponse(fullPrompt);
   }
 
   async sendAction(): Promise<void> {
