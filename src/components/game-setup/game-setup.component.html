@@ -1,0 +1,39 @@
+<div class="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+  <div class="max-w-2xl w-full bg-zinc-800/50 backdrop-blur-sm p-8 rounded-lg border border-amber-500/20 shadow-2xl shadow-black/50">
+    <h1 class="text-5xl md:text-6xl font-medieval text-amber-400 mb-2">Gemini's Gate</h1>
+    <p class="text-lg text-zinc-300 mb-8">Craft your saga, or let fate decide.</p>
+
+    <div class="space-y-6">
+      <textarea
+        [ngModel]="prompt()"
+        (ngModelChange)="prompt.set($event)"
+        rows="4"
+        placeholder="Describe the adventure you wish to embark on... e.g., 'A quest to find a lost artifact in a haunted forest.'"
+        class="w-full p-4 bg-zinc-900 border border-zinc-700 rounded-md focus:ring-2 focus:ring-amber-500 focus:outline-none focus:border-amber-500 transition-colors placeholder-zinc-500 text-zinc-200 resize-none"
+      ></textarea>
+
+      <button
+        (click)="startAdventure()"
+        class="w-full py-3 px-6 bg-amber-600 hover:bg-amber-500 text-zinc-900 font-bold rounded-md shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out font-medieval text-xl tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="prompt().trim().length === 0"
+        title="Begin with your custom prompt"
+      >
+        Begin Your Journey
+      </button>
+
+      <div class="flex items-center my-4">
+        <div class="flex-grow border-t border-zinc-700"></div>
+        <span class="flex-shrink mx-4 text-zinc-500">OR</span>
+        <div class="flex-grow border-t border-zinc-700"></div>
+      </div>
+      
+      <button
+        (click)="startRandomAdventure()"
+        class="w-full py-3 px-6 bg-zinc-700 hover:bg-zinc-600 text-amber-400 font-bold rounded-md shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out font-medieval text-xl tracking-wider"
+        title="Let the Dungeon Master create a story for you"
+      >
+        Start a Random Adventure
+      </button>
+    </div>
+  </div>
+</div>
